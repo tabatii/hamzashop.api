@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Core\LiveEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
@@ -28,7 +28,7 @@ class PayPalController extends Controller
 	{
 		$clientId = env('PAYPAL_ID') ?: 'PAYPAL-SANDBOX-CLIENT-ID';
 		$clientSecret = env('PAYPAL_SECRET') ?: 'PAYPAL-SANDBOX-CLIENT-SECRET';
-		return new ProductionEnvironment($clientId, $clientSecret);
+		return new LiveEnvironment($clientId, $clientSecret);
 	}
 
 	/**
