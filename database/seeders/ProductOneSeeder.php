@@ -20,9 +20,9 @@ class ProductOneSeeder extends Seeder
         $product->stock = 10;
         $product->weight = 0.3;
         $product->images = [
-            'http://localhost:8000/storage/products/1/1.jpg',
-            'http://localhost:8000/storage/products/1/2.jpg',
-            'http://localhost:8000/storage/products/1/3.jpg',
+            'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F1.jpg?alt=media&token=d8cd2a62-964e-4359-900a-8e79721e5b3e',
+            'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F2.jpg?alt=media&token=ce2a116b-8271-4c5f-a262-4841a6b8cd7c',
+            'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F3.jpg?alt=media&token=483072b3-d219-4596-a7f7-0accfe87788b',
         ];
         $product->features = [
             'Hair Regrowth Treatment for Men.',
