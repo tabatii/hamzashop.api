@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\LiveEnvironment;
+use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
@@ -21,20 +21,21 @@ class PayPalController extends Controller
 	}
 
 	/**
-	 * Set up and return PayPal PHP SDK environment with PayPal access credentials.
-	 * This sample uses SandboxEnvironment. In production, use LiveEnvironment.
+	 * Setting up and Returns PayPal SDK environment with PayPal Access credentials.
+	 * For demo purpose, we are using SandboxEnvironment. In production this will be
+	 * ProductionEnvironment.
 	 */
 	public function environment()
 	{
 		$clientId = env('PAYPAL_ID') ?: 'PAYPAL-SANDBOX-CLIENT-ID';
 		$clientSecret = env('PAYPAL_SECRET') ?: 'PAYPAL-SANDBOX-CLIENT-SECRET';
-		return new LiveEnvironment($clientId, $clientSecret);
+		return new ProductionEnvironment($clientId, $clientSecret);
 	}
 
 	/**
-	 * Returns PayPal HTTP client instance with environment that has access
-	 * credentials context. Use this instance to invoke PayPal APIs, provided the
-	 * credentials have access.
+	 * Returns PayPal HTTP client instance with environment which has access
+	 * credentials context. This can be used invoke PayPal API's provided the
+	 * credentials have the access to do so.
 	 */
 	public function client()
 	{
