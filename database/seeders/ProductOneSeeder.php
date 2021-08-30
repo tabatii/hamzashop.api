@@ -21,7 +21,7 @@ class ProductOneSeeder extends Seeder
         $product->weight = 0.3;
         $product->images = [
             'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F1.jpg?alt=media&token=d8cd2a62-964e-4359-900a-8e79721e5b3e',
-            'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F2.jpg?alt=media&token=ce2a116b-8271-4c5f-a262-4841a6b8cd7c',
+            'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F2.jpg?alt=media&token=e4e1ea35-2a15-4b6b-9257-84c42d85245e',
             'https://firebasestorage.googleapis.com/v0/b/hamzashop-afb8f.appspot.com/o/products%2Fusa%2F3.jpg?alt=media&token=483072b3-d219-4596-a7f7-0accfe87788b',
         ];
         $product->features = [

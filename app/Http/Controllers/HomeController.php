@@ -9,7 +9,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $product = Product::first();
-        return response()->json($product->id);
+        //
     }
 }
