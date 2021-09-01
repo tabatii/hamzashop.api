@@ -16,7 +16,7 @@ class ProductOneSeeder extends Seeder
     {
         $product = new Product;
         $product->title = 'Kirkland Signature Minoxidil for Men 5% Extra Strength Hair Regrowth for Men.';
-        $product->price = 750;
+        $product->price = 700;
         $product->stock = 10;
         $product->weight = 0.3;
         $product->images = [

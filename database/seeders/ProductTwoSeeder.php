@@ -16,7 +16,7 @@ class ProductTwoSeeder extends Seeder
     {
         $product = new Product;
         $product->title = 'Minoxidil Viñas 50 mg/ml solucion cutanea.';
-        $product->price = 400;
+        $product->price = 600;
         $product->stock = 10;
         $product->weight = 0.3;
         $product->images = [
