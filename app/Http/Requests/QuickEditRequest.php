@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ContactRequest extends FormRequest
+class QuickEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class ContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'message' => 'required|string',
+            'price' => 'required|numeric|min:1|max:1000000',
+            'stock' => 'required|integer|min:1|max:1000',
         ];
     }
 }

@@ -36,7 +36,7 @@ class AddressController extends Controller
     public function show($id)
     {
         $address = Address::findOrFail($id);
-        return response()->json(new AddressResource($address));
+        return new AddressResource($address);
     }
 
     public function update(AddressRequest $request, $id)

@@ -3,18 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     const PENDING = 'pending';
-    const PAID = 'paid';
-    const PACKED = 'packed';
+    const PACKING = 'packing';
     const SHIPPED = 'shipped';
-    const DELIVERED = 'delivered';
+    const ARRIVED = 'arrived';
+    const RECEIVED = 'received';
     const CANCELLED = 'cancelled';
 
     const CASH = 'pay on delivery';
@@ -33,5 +34,10 @@ class Order extends Model
     public function address()
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

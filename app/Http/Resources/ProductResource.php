@@ -16,12 +16,14 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'longTitle' => $this->long_title,
+            'shortTitle' => $this->short_title,
             'price' => $this->price,
             'stock' => $this->stock,
-            'images' => $this->images,
             'features' => $this->features,
-            'description' => $this->description
+            'images' => $this->images,
+            'description' => $this->description,
+            'status' => $this->when(auth()->guard('admin')->check(), $this->status)
         ];
     }
 }

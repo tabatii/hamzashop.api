@@ -22,6 +22,7 @@ class CreateProductsTable extends Migration
             $table->json('features');
             $table->json('images');
             $table->longText('description');
+            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

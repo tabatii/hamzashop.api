@@ -27,8 +27,9 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at,
             'product' => [
                 'id' => $this->product->id,
-                'title' => $this->product->title,
-                'images' => $this->product->images,
+                'longTitle' => $this->product->long_title,
+                'shortTitle' => $this->product->short_title,
+                'image' => $this->product->images[0],
             ],
             'address' => [
                 'id' => $this->address->id,
@@ -39,6 +40,10 @@ class OrderResource extends JsonResource
                 'city' => $this->address->city,
                 'zip' => $this->address->zip,
                 'mobile' => $this->address->mobile,
+            ],
+            'user' => [
+                'id' => $this->user->id,
+                'email' => $this->user->email,
             ]
         ];
     }

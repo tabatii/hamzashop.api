@@ -24,7 +24,7 @@ class AuthController extends Controller
         $user->save();
 
         $token = auth()->login($user);
-        //$user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
         return $this->respondWithToken($token);
     }
 
@@ -39,9 +39,7 @@ class AuthController extends Controller
 
     public function me()
     {
-        return response()->json(
-            new UserResource(auth()->user())
-        );
+        return new UserResource(auth()->user());
     }
 
     public function logout()

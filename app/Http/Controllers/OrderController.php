@@ -4,23 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
 use App\Http\Requests\OrderRequest;
-use App\Services\AmanaService;
+use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admin')->except(['store', 'show', 'cancel']);
+    }
+
     public function index()
     {
-        $orders = Order::where('user_id', auth()->id())->with(['product','address'])->latest()->get();
-        return response()->json(OrderResource::collection($orders));
+        $orders = Order::with(['product','address','user'])->latest()->get();
+        return OrderResource::collection($orders);
     }
 
     public function store(OrderRequest $request)
     {
         $product = Product::findOrFail($request->product);
-        $amana = (new AmanaService)->price($product->weight);
+        $amana = 50;
 
         $order = new Order;
         $order->user_id = auth()->id();
@@ -38,7 +43,8 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        //
+        $orders = Order::where('user_id', auth()->id())->with(['product','address','user'])->latest()->get();
+        return OrderResource::collection($orders);
     }
 
     public function update(OrderRequest $request, $id)
@@ -47,6 +53,25 @@ class OrderController extends Controller
     }
 
     public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return response()->json();
+    }
+
+    public function status($id, Request $request)
+    {
+        $array = [Order::PENDING, Order::PACKING, Order::SHIPPED, Order::ARRIVED, Order::RECEIVED, Order::CANCELLED];
+        $request->validate([
+            'status' => 'required|in:'.implode(',', $array)
+        ]);
+        $order = Order::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+        return response()->json();
+    }
+
+    public function cancel($id)
     {
         $order = Order::findOrFail($id);
         if ($order->status === Order::PENDING) {

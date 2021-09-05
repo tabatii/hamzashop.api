@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use App\Http\Requests\PaypalCaptureRequest;
 use App\Http\Requests\PaypalCreateRequest;
-use App\Services\AmanaService;
 use App\Models\Product;
 use App\Models\Order;
 
@@ -29,7 +28,7 @@ class PayPalController extends Controller
 	{
 		$clientId = env('PAYPAL_ID') ?: 'PAYPAL-SANDBOX-CLIENT-ID';
 		$clientSecret = env('PAYPAL_SECRET') ?: 'PAYPAL-SANDBOX-CLIENT-SECRET';
-		return new ProductionEnvironment($clientId, $clientSecret);
+		return new SandboxEnvironment($clientId, $clientSecret);
 	}
 
 	/**
@@ -45,7 +44,7 @@ class PayPalController extends Controller
 	public function body($id, $qty)
 	{
 		$product = Product::findOrFail($id);
-		$amana = (new AmanaService)->price($product->weight);
+		$amana = 50;
 		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $qty) + $amana)->get();
 		return [
 			'intent' => 'CAPTURE',
@@ -77,7 +76,7 @@ class PayPalController extends Controller
 	public function capture(PaypalCaptureRequest $request)
 	{
 		$product = Product::findOrFail($request->product);
-		$amana = (new AmanaService)->price($product->weight);
+		$amana = 50;
 		$capture = new OrdersCaptureRequest($request->order);
 		$data = $this->client()->execute($capture);
 
