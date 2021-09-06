@@ -47,3 +47,4 @@ Route::patch('/orders/cancel/{id}', 'OrderController@cancel');
 Route::apiResource('/users', 'UserController')->parameters(['users' => 'id']);
 Route::apiResource('/addresses', 'AddressController')->parameters(['addresses' => 'id']);
 Route::apiResource('/messages', 'MessageController')->parameters(['messages' => 'id']);
+Route::apiResource('/shipping', 'ShippingController')->parameters(['shipping' => 'id']);
