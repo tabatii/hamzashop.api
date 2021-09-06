@@ -19,11 +19,6 @@ class ProductOneSeeder extends Seeder
         $product->short_title = 'Kirkland Minoxidil';
         $product->price = 700;
         $product->stock = 100;
-        $product->features = [
-            'Hair Regrowth Treatment for Men.',
-            'Results may Occur at 2 Months.',
-            'Contains Information Booklet on How To Use and Obtain Best Results.',
-        ];
         $product->images = [
             [
                 'path' => 'products/_Va-u7cIxJSKjeUamt6w/0HcDn0uxL0.jpg',

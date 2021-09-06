@@ -19,11 +19,6 @@ class ProductTwoSeeder extends Seeder
         $product->short_title = 'Minoxidil Viñas';
         $product->price = 400;
         $product->stock = 100;
-        $product->features = [
-            'Hair Regrowth Treatment for Men.',
-            'Results may Occur at 2 Months.',
-            'Contains Information Booklet on How To Use and Obtain Best Results.',
-        ];
         $product->images = [
             [
                 'path' => 'products/m9uEVCKgf4Y-sjJF8EWb/c3IVhiKe3m.jpg',

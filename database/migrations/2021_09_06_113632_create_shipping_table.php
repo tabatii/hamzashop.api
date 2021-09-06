@@ -15,11 +15,10 @@ class CreateShippingTable extends Migration
     {
         Schema::create('shipping', function (Blueprint $table) {
             $table->id();
-            $table->string('region');
+            $table->string('region')->unique();
             $table->float('price');
             $table->integer('min_time');
             $table->integer('max_time');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

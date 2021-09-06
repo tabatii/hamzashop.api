@@ -28,8 +28,6 @@ class ProductRequest extends FormRequest
             'short' => 'required|string|max:40',
             'price' => 'required|numeric|min:1|max:1000000',
             'stock' => 'required|integer|min:1|max:1000',
-            'features' => 'required|array',
-            'features.*' => 'required|string|max:190',
             'images' => 'required|array|max:9',
             'images.*' => 'required|array',
             'images.*.*' => 'required|string',

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderResource;
 use App\Http\Requests\OrderRequest;
 use Illuminate\Http\Request;
+use App\Models\Shipping;
 use App\Models\Product;
+use App\Models\Address;
 use App\Models\Order;
 
 
@@ -25,16 +27,17 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         $product = Product::findOrFail($request->product);
-        $amana = 50;
+        $address = Address::findOrFail($request->address);
+        $shipping = Shipping::where('region', $address->country)->first();
 
         $order = new Order;
         $order->user_id = auth()->id();
         $order->product_id = $product->id;
-        $order->address_id = $request->address;
+        $order->address_id = $address->id;
         $order->quantity = $request->quantity;
         $order->unit_price = $product->price;
-        $order->shipping_price = $amana;
-        $order->total_amount = ($product->price * $request->quantity) + $amana;
+        $order->shipping_price = $shipping->price;
+        $order->total_amount = ($product->price * $request->quantity) + $shipping->price;
         $order->payment_method = Order::CASH;
         $order->status = Order::PENDING;
         $order->save();

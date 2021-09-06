@@ -19,7 +19,6 @@ class CreateProductsTable extends Migration
             $table->string('short_title');
             $table->float('price');
             $table->integer('stock');
-            $table->json('features');
             $table->json('images');
             $table->longText('description');
             $table->string('status');

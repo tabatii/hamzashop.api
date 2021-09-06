@@ -9,7 +9,9 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use App\Http\Requests\PaypalCaptureRequest;
 use App\Http\Requests\PaypalCreateRequest;
+use App\Models\Shipping;
 use App\Models\Product;
+use App\Models\Address;
 use App\Models\Order;
 
 class PayPalController extends Controller
@@ -41,11 +43,12 @@ class PayPalController extends Controller
 		return new PayPalHttpClient($this->environment());
 	}
 
-	public function body($id, $qty)
+	public function body($id, $qty, $adr)
 	{
 		$product = Product::findOrFail($id);
-		$amana = 50;
-		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $qty) + $amana)->get();
+		$address = Address::findOrFail($adr);
+		$shipping = Shipping::where('region', $address->country)->first();
+		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $qty) + $shipping->price)->get();
 		return [
 			'intent' => 'CAPTURE',
 			'application_context' => [
@@ -68,7 +71,7 @@ class PayPalController extends Controller
 	{
 		$payment = new OrdersCreateRequest();
 		$payment->prefer('return=representation');
-		$payment->body = $this->body($request->product, $request->quantity);
+		$payment->body = $this->body($request->product, $request->quantity, $request->address);
 		$response = $this->client()->execute($payment);
 		return response()->json($response);
 	}
@@ -76,7 +79,8 @@ class PayPalController extends Controller
 	public function capture(PaypalCaptureRequest $request)
 	{
 		$product = Product::findOrFail($request->product);
-		$amana = 50;
+		$address = Address::findOrFail($request->address);
+		$shipping = Shipping::where('region', $address->country)->first();
 		$capture = new OrdersCaptureRequest($request->order);
 		$data = $this->client()->execute($capture);
 
@@ -86,8 +90,8 @@ class PayPalController extends Controller
 		$order->address_id = $request->address;
 		$order->quantity = $request->quantity;
 		$order->unit_price = $product->price;
-		$order->shipping_price = $amana;
-		$order->total_amount =($product->price * $request->quantity) + $amana;
+		$order->shipping_price = $shipping->price;
+		$order->total_amount =($product->price * $request->quantity) + $shipping->price;
 		$order->paid_amount = $data->result->purchase_units[0]->payments->captures[0]->amount->value;
 		$order->paid_currency = $data->result->purchase_units[0]->payments->captures[0]->amount->currency_code;
 		$order->payment_method = Order::PAYPAL;

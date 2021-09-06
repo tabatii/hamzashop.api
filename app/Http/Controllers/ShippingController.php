@@ -32,7 +32,8 @@ class ShippingController extends Controller
 
     public function show($id)
     {
-        //
+        $shipping = Shipping::findOrFail($id);
+        return new ShippingResource($shipping);
     }
 
     public function update(ShippingRequest $request, $id)

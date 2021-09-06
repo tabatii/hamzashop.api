@@ -20,7 +20,6 @@ class ProductResource extends JsonResource
             'shortTitle' => $this->short_title,
             'price' => $this->price,
             'stock' => $this->stock,
-            'features' => $this->features,
             'images' => $this->images,
             'description' => $this->description,
             'status' => $this->when(auth()->guard('admin')->check(), $this->status)

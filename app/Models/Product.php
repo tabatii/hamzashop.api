@@ -12,6 +12,5 @@ class Product extends Model
 
     protected $casts = [
         'images' => 'json',
-        'features' => 'json',
     ];
 }
