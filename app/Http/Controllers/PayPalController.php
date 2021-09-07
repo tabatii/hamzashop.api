@@ -47,7 +47,7 @@ class PayPalController extends Controller
 	{
 		$product = Product::findOrFail($id);
 		$address = Address::findOrFail($adr);
-		$shipping = Shipping::where('region', $address->country)->first();
+		$shipping = Shipping::where('country', $address->country)->first();
 		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $qty) + $shipping->price)->get();
 		return [
 			'intent' => 'CAPTURE',
@@ -80,7 +80,7 @@ class PayPalController extends Controller
 	{
 		$product = Product::findOrFail($request->product);
 		$address = Address::findOrFail($request->address);
-		$shipping = Shipping::where('region', $address->country)->first();
+		$shipping = Shipping::where('country', $address->country)->first();
 		$capture = new OrdersCaptureRequest($request->order);
 		$data = $this->client()->execute($capture);
 

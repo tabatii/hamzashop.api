@@ -24,7 +24,7 @@ class ShippingRequest extends FormRequest
     public function rules()
     {
         return [
-            'region' => 'required|string|max:100',
+            'country' => 'required|string|max:100',
             'price' => 'required|numeric|min:1|max:100000',
             'min' => 'required|integer|min:1|max:30',
             'max' => 'required|integer|min:1|max:60',

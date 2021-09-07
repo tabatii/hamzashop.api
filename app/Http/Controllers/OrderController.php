@@ -28,7 +28,7 @@ class OrderController extends Controller
     {
         $product = Product::findOrFail($request->product);
         $address = Address::findOrFail($request->address);
-        $shipping = Shipping::where('region', $address->country)->first();
+        $shipping = Shipping::where('country', $address->country)->first();
 
         $order = new Order;
         $order->user_id = auth()->id();

@@ -15,14 +15,14 @@ class ShippingController extends Controller
 
     public function index()
     {
-        $rates = Shipping::orderBy('region')->get();
+        $rates = Shipping::orderBy('country')->get();
         return ShippingResource::collection($rates);
     }
 
     public function store(ShippingRequest $request)
     {
         $shipping = new Shipping;
-        $shipping->region = $request->region;
+        $shipping->country = $request->country;
         $shipping->price = $request->price;
         $shipping->min_time = $request->min;
         $shipping->max_time = $request->max;
