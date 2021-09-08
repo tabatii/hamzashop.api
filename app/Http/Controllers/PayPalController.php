@@ -9,6 +9,7 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use App\Http\Requests\PaypalCaptureRequest;
 use App\Http\Requests\PaypalCreateRequest;
+use Illuminate\Support\Facades\DB;
 use App\Models\Shipping;
 use App\Models\Product;
 use App\Models\Address;
@@ -78,25 +79,31 @@ class PayPalController extends Controller
 
 	public function capture(PaypalCaptureRequest $request)
 	{
-		$product = Product::findOrFail($request->product);
-		$address = Address::findOrFail($request->address);
-		$shipping = Shipping::where('country', $address->country)->first();
-		$capture = new OrdersCaptureRequest($request->order);
-		$data = $this->client()->execute($capture);
+		return DB::transaction(function () use ($request) {
 
-		$order = new Order;
-		$order->user_id = auth()->id();
-		$order->product_id = $product->id;
-		$order->address_id = $request->address;
-		$order->quantity = $request->quantity;
-		$order->unit_price = $product->price;
-		$order->shipping_price = $shipping->price;
-		$order->total_amount =($product->price * $request->quantity) + $shipping->price;
-		$order->paid_amount = $data->result->purchase_units[0]->payments->captures[0]->amount->value;
-		$order->paid_currency = $data->result->purchase_units[0]->payments->captures[0]->amount->currency_code;
-		$order->payment_method = Order::PAYPAL;
-		$order->status = Order::PENDING;
-		$order->save();
-		return response()->json();
+			$product = Product::findOrFail($request->product);
+			$address = Address::findOrFail($request->address);
+			$shipping = Shipping::where('country', $address->country)->first();
+			$data = $this->client()->execute(new OrdersCaptureRequest($request->order));
+
+			$order = new Order;
+			$order->user_id = auth()->id();
+			$order->product_id = $product->id;
+			$order->address_id = $request->address;
+			$order->quantity = $request->quantity;
+			$order->unit_price = $product->price;
+			$order->shipping_price = $shipping->price;
+			$order->total_amount =($product->price * $request->quantity) + $shipping->price;
+			$order->paid_amount = $data->result->purchase_units[0]->payments->captures[0]->amount->value;
+			$order->paid_currency = $data->result->purchase_units[0]->payments->captures[0]->amount->currency_code;
+			$order->payment_method = Order::PAYPAL;
+			$order->status = Order::PENDING;
+			$order->save();
+
+			$product->stock = $product->stock - 1;
+			$product->save();
+
+			return response()->json();
+		});
 	}
 }

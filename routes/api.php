@@ -42,6 +42,7 @@ Route::patch('/products/hide/{id}', 'ProductController@hide');
 
 Route::apiResource('/orders', 'OrderController')->parameters(['orders' => 'id']);
 Route::patch('/orders/status/{id}', 'OrderController@status');
+Route::patch('/orders/refuse/{id}', 'OrderController@refuse');
 Route::patch('/orders/cancel/{id}', 'OrderController@cancel');
 
 Route::apiResource('/users', 'UserController')->parameters(['users' => 'id']);
