@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Http\Requests\StatusRequest;
 use App\Http\Requests\OrderRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\Shipping;
 use App\Models\Product;
 use App\Models\Address;
@@ -77,11 +77,8 @@ class OrderController extends Controller
         //
     }
 
-    public function status($id, Request $request)
+    public function status($id, StatusRequest $request)
     {
-        $request->validate([
-            'status' => 'required|in:'.implode(',', $this->array)
-        ]);
         $order = Order::findOrFail($id);
         if ($order->status !== Order::CANCELLED) {
             $order->status = $request->status;
