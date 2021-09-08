@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $products = Product::where('status', 'public')->take(3)->get();
+        $products = Product::where('status', 'public')->oldest()->take(3)->get();
         return ProductResource::collection($products);
     }
 }
