@@ -29,7 +29,6 @@ class StatusRequest extends FormRequest
             Order::PACKING,
             Order::SHIPPED,
             Order::ARRIVED,
-            Order::RECEIVED,
         ];
         return [
             'status' => 'required|in:'.implode(',', $array)

@@ -80,12 +80,14 @@ class OrderController extends Controller
     public function status($id, StatusRequest $request)
     {
         $order = Order::findOrFail($id);
-        if ($order->status !== Order::CANCELLED) {
-            $order->status = $request->status;
-            $order->save();
-            return response()->json();
+
+        if ($order->status === Order::CANCELLED || $order->status === Order::RECEIVED) {
+            return response()->json([], 403);
         }
-        return response()->json(['message' => 'This order has been cancelled.'], 403);
+        $order->status = $request->status;
+        $order->save();
+
+        return response()->json();
     }
 
     public function refuse($id)
@@ -93,6 +95,10 @@ class OrderController extends Controller
         return DB::transaction(function () use ($id) {
 
             $order = Order::findOrFail($id);
+
+            if ($order->status === Order::RECEIVED) {
+                return response()->json([], 403);
+            }
             $order->status = Order::CANCELLED;
             $order->save();
 
