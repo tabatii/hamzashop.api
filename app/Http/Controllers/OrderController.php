@@ -24,7 +24,7 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin')->except(['store', 'show', 'cancel']);
+        $this->middleware('auth:admin')->except(['store', 'show', 'finish', 'cancel']);
     }
 
     public function index()
@@ -108,6 +108,21 @@ class OrderController extends Controller
 
             return response()->json();
         });
+    }
+
+    public function finish($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status !== Order::CANCELLED) {
+            if ($order->payment_method === Order::CASH) {
+                $order->paid_amount = $order->total_amount;
+                $order->paid_currency = 'MAD';
+            }
+            $order->status = Order::RECEIVED;
+            $order->save();
+            return response()->json();
+        }
+        return response()->json([], 403);
     }
 
     public function cancel($id)
