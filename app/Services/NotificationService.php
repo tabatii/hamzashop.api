@@ -13,17 +13,17 @@ class NotificationService
     public function cancelOrder()
     {
         $name = auth()->user()->name;
-        return "<b>{$name}</b> has cancelled his order.</b>";
+        return "<b>{$name}</b> has cancelled his order.";
     }
 
     public function confirmOrder()
     {
         $name = auth()->user()->name;
-        return "<b>{$name}</b> has confirmed receiving his order.</b>";
+        return "<b>{$name}</b> has confirmed receiving his order.";
     }
 
     public function newUser()
     {
-        return "a new user has been registered";
+        return "a new user has been registered.";
     }
 }
