@@ -7,7 +7,7 @@ class NotificationService
     public function newOrder()
     {
         $name = auth()->user()->name;
-        return "You have a new order from <b>{$name}.</b>";
+        return "You have a new order from <b>{$name}</b>.";
     }
 
     public function cancelOrder()
