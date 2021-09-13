@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
+use App\Models\Message;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\User;
@@ -22,6 +24,14 @@ class DashboardController extends Controller
             'orders' => Order::where('status', Order::RECEIVED)->count(),
             'products' => Product::count(),
             'users' => User::count(),
+        ]);
+    }
+
+    public function header()
+    {
+        return response()->json([
+            'notifications' => Notification::where('status', false)->count(),
+            'messages' => Message::where('status', false)->count(),
         ]);
     }
 }

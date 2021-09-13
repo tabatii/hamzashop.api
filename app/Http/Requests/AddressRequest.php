@@ -29,7 +29,7 @@ class AddressRequest extends FormRequest
             'details' => 'string|nullable|max:100',
             'country' => 'required|string|max:100',
             'city' => 'required|string|max:100',
-            'zip' => 'required|integer',
+            'zip' => 'required|digits:5',
             'mobile' => 'required|numeric',
         ];
     }

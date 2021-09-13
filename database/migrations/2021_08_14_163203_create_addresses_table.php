@@ -23,8 +23,8 @@ class CreateAddressesTable extends Migration
             $table->string('city');
             $table->integer('zip');
             $table->string('mobile');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

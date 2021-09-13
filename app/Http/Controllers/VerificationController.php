@@ -15,12 +15,10 @@ class VerificationController extends Controller
         }
 
         $user = User::findOrFail($id);
-
         if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
         }
-
-        return redirect()->away(env('APP_URL').'/verified');
+        return redirect()->away(env('APP_URL').'/auth/verified');
     }
 
     public function resend()
@@ -28,9 +26,7 @@ class VerificationController extends Controller
         if (auth()->user()->hasVerifiedEmail()) {
             return response()->json([], 403);
         }
-
         auth()->user()->sendEmailVerificationNotification();
-
         return response()->json();
     }
 }

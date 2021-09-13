@@ -26,8 +26,8 @@ class CreateOrdersTable extends Migration
             $table->string('paid_currency')->nullable();
             $table->string('payment_method');
             $table->string('status');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

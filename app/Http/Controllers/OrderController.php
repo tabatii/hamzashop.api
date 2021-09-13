@@ -2,26 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderResource;
-use App\Http\Requests\StatusRequest;
-use App\Http\Requests\OrderRequest;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\OrderRequest;
+use App\Http\Requests\StatusRequest;
+use App\Http\Resources\OrderResource;
+use App\Services\NotificationService;
+use App\Services\OrderService;
+use App\Models\Notification;
 use App\Models\Shipping;
 use App\Models\Product;
 use App\Models\Address;
 use App\Models\Order;
 
-
 class OrderController extends Controller
 {
-    protected $array = [
-        Order::PENDING,
-        Order::PACKING,
-        Order::SHIPPED,
-        Order::ARRIVED,
-        Order::RECEIVED,
-    ];
-
     public function __construct()
     {
         $this->middleware('auth:admin')->except(['store', 'show', 'finish', 'cancel']);
@@ -38,9 +32,12 @@ class OrderController extends Controller
 
         return DB::transaction(function () use ($request) {
 
-            $product = Product::findOrFail($request->product);
             $address = Address::findOrFail($request->address);
             $shipping = Shipping::where('country', $address->country)->first();
+
+            $product = Product::findOrFail($request->product);
+            $product->stock -= 1;
+            $product->save();
 
             $order = new Order;
             $order->user_id = auth()->id();
@@ -54,8 +51,10 @@ class OrderController extends Controller
             $order->status = Order::PENDING;
             $order->save();
 
-            $product->stock = $product->stock - 1;
-            $product->save();
+            $notification = new Notification;
+            $notification->icon = 'mdi-cart-plus';
+            $notification->content = (new NotificationService)->newOrder();
+            $notification->save();
 
             return response()->json();
         });
@@ -67,9 +66,13 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    public function update(OrderRequest $request, $id)
+    public function update(StatusRequest $request, $id)
     {
-        //
+        $service = new OrderService;
+        if ($service->status($id, $request->status)) {
+            return response()->json();
+        }
+        return response()->json([], 403);
     }
 
     public function destroy($id)
@@ -77,49 +80,19 @@ class OrderController extends Controller
         //
     }
 
-    public function status($id, StatusRequest $request)
-    {
-        $order = Order::findOrFail($id);
-
-        if ($order->status === Order::CANCELLED || $order->status === Order::RECEIVED) {
-            return response()->json([], 403);
-        }
-        $order->status = $request->status;
-        $order->save();
-
-        return response()->json();
-    }
-
     public function refuse($id)
     {
-        return DB::transaction(function () use ($id) {
-
-            $order = Order::findOrFail($id);
-
-            if ($order->status === Order::RECEIVED) {
-                return response()->json([], 403);
-            }
-            $order->status = Order::CANCELLED;
-            $order->save();
-
-            $product = Product::findOrFail($order->product_id);
-            $product->stock = $product->stock + 1;
-            $product->save();
-
+        $service = new OrderService;
+        if ($service->refuse($id)) {
             return response()->json();
-        });
+        }
+        return response()->json([], 403);
     }
 
     public function finish($id)
     {
-        $order = Order::findOrFail($id);
-        if ($order->status !== Order::CANCELLED) {
-            if ($order->payment_method === Order::CASH) {
-                $order->paid_amount = $order->total_amount;
-                $order->paid_currency = 'MAD';
-            }
-            $order->status = Order::RECEIVED;
-            $order->save();
+        $service = new OrderService;
+        if ($service->finish($id)) {
             return response()->json();
         }
         return response()->json([], 403);
@@ -127,20 +100,10 @@ class OrderController extends Controller
 
     public function cancel($id)
     {
-        return DB::transaction(function () use ($id) {
-
-            $order = Order::findOrFail($id);
-            if ($order->status === Order::PENDING) {
-                $order->status = Order::CANCELLED;
-                $order->save();
-
-                $product = Product::findOrFail($order->product_id);
-                $product->stock = $product->stock + 1;
-                $product->save();
-
-                return response()->json();
-            }
-            return response()->json(['message' => "You can't cancel your order by now."], 403);
-        });
+        $service = new OrderService;
+        if ($service->cancel($id)) {
+            return response()->json();
+        }
+        return response()->json([], 403);
     }
 }

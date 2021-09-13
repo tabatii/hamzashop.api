@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Services\NotificationService;
+use App\Models\Notification;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -22,6 +24,11 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->save();
+
+        $notification = new Notification;
+        $notification->icon = 'mdi-account-plus';
+        $notification->content = (new NotificationService)->newUser();
+        $notification->save();
 
         $token = auth()->login($user);
         $user->sendEmailVerificationNotification();

@@ -9,7 +9,9 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
 use App\Http\Requests\PaypalCaptureRequest;
 use App\Http\Requests\PaypalCreateRequest;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\DB;
+use App\Models\Notification;
 use App\Models\Shipping;
 use App\Models\Product;
 use App\Models\Address;
@@ -81,15 +83,18 @@ class PayPalController extends Controller
 	{
 		return DB::transaction(function () use ($request) {
 
-			$product = Product::findOrFail($request->product);
 			$address = Address::findOrFail($request->address);
 			$shipping = Shipping::where('country', $address->country)->first();
 			$data = $this->client()->execute(new OrdersCaptureRequest($request->order));
 
+			$product = Product::findOrFail($request->product);
+			$product->stock -= 1;
+			$product->save();
+
 			$order = new Order;
 			$order->user_id = auth()->id();
 			$order->product_id = $product->id;
-			$order->address_id = $request->address;
+			$order->address_id = $address->id;
 			$order->quantity = $request->quantity;
 			$order->unit_price = $product->price;
 			$order->shipping_price = $shipping->price;
@@ -100,8 +105,10 @@ class PayPalController extends Controller
 			$order->status = Order::PENDING;
 			$order->save();
 
-			$product->stock = $product->stock - 1;
-			$product->save();
+			$notification = new Notification;
+			$notification->icon = 'mdi-cart-plus';
+			$notification->content = (new NotificationService)->newOrder();
+            $notification->save();
 
 			return response()->json();
 		});

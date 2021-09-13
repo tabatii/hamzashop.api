@@ -15,6 +15,7 @@ class MessageController extends Controller
 
     public function index()
     {
+        $markAsRead = Message::where('status', false)->update(['status' => true]);
         $messages = Message::latest()->get();
         return MessageResource::collection($messages);
     }
