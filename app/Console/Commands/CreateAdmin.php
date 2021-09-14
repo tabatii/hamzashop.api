@@ -39,7 +39,7 @@ class CreateAdmin extends Command
      */
     public function handle()
     {
-        $password = $this->password();
+        $password = app()->environment('local') ? 123456 : Str::lower(Str::random(20));
         if (!Admin::where('email', $this->argument('email'))->exists()) {
             $admin = new Admin;
             $admin->email = $this->argument('email');
@@ -48,13 +48,5 @@ class CreateAdmin extends Command
             return $this->info($password);
         }
         return $this->info($this->argument('email').' exists already');
-    }
-
-    protected function password()
-    {
-        if (app()->environment('local')) {
-            return 123456;
-        }
-        return Str::lower(Str::random(20));
     }
 }
