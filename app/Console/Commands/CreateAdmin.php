@@ -39,12 +39,13 @@ class CreateAdmin extends Command
      */
     public function handle()
     {
+        $password = $this->password();
         if (!Admin::where('email', $this->argument('email'))->exists()) {
             $admin = new Admin;
             $admin->email = $this->argument('email');
-            $admin->password = bcrypt($this->password());
+            $admin->password = bcrypt($password());
             $admin->save();
-            return $this->info($this->password());
+            return $this->info($password());
         }
         return $this->info($this->argument('email').' exists already');
     }
