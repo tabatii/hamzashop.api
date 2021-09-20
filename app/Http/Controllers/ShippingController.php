@@ -23,6 +23,7 @@ class ShippingController extends Controller
     {
         $shipping = new Shipping;
         $shipping->country = $request->country;
+        $shipping->code = $request->code;
         $shipping->price = $request->price;
         $shipping->min_time = $request->min;
         $shipping->max_time = $request->max;

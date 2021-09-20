@@ -33,7 +33,7 @@ class OrderController extends Controller
         return DB::transaction(function () use ($request) {
 
             $address = Address::findOrFail($request->address);
-            $shipping = Shipping::where('country', $address->country)->first();
+            $shipping = Shipping::where('code', $address->country)->first(); // check if morocco
 
             $product = Product::findOrFail($request->product);
             $product->stock -= 1;

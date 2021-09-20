@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\AddressResource;
 
 class OrderResource extends JsonResource
 {
@@ -25,21 +26,12 @@ class OrderResource extends JsonResource
             'payment_method' => $this->payment_method,
             'status' => $this->status,
             'created_at' => $this->created_at,
+            'address' => new AddressResource($this->address),
             'product' => [
                 'id' => $this->product->id,
                 'longTitle' => $this->product->long_title,
                 'shortTitle' => $this->product->short_title,
                 'image' => $this->product->images[0],
-            ],
-            'address' => [
-                'id' => $this->address->id,
-                'name' => $this->address->name,
-                'street' => $this->address->street,
-                'details' => $this->address->details,
-                'country' => $this->address->country,
-                'city' => $this->address->city,
-                'zip' => $this->address->zip,
-                'mobile' => $this->address->mobile,
             ],
             'user' => [
                 'id' => $this->user->id,

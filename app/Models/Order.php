@@ -19,6 +19,7 @@ class Order extends Model
     const CANCELLED = 'cancelled';
 
     const CASH = 'pay on delivery';
+    const CARD = 'credit card';
     const PAYPAL = 'paypal';
 
     public function getCreatedAtAttribute($value)

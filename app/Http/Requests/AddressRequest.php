@@ -24,13 +24,14 @@ class AddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:100',
+            'first' => 'required|string|max:100',
+            'last' => 'required|string|max:100',
             'street' => 'required|string|max:100',
             'details' => 'string|nullable|max:100',
             'country' => 'required|string|max:100',
             'city' => 'required|string|max:100',
             'zip' => 'required|digits:5',
-            'mobile' => 'required|numeric',
+            'mobile' => 'required|string',
         ];
     }
 }

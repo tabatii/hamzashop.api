@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Shipping;
 
 class AddressResource extends JsonResource
 {
@@ -16,7 +17,7 @@ class AddressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->first_name.' '.$this->last_name,
             'street' => $this->street,
             'details' => $this->details,
             'country' => $this->country,

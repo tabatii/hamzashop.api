@@ -15,7 +15,8 @@ class CreateShippingTable extends Migration
     {
         Schema::create('shipping', function (Blueprint $table) {
             $table->id();
-            $table->string('country')->unique();
+            $table->string('country');
+            $table->string('code')->unique();
             $table->float('price');
             $table->integer('min_time');
             $table->integer('max_time');

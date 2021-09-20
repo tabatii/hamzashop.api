@@ -22,7 +22,8 @@ class AddressController extends Controller
     {
         $address = new Address;
         $address->user_id = auth()->id();
-        $address->name = $request->name;
+        $address->first_name = $request->first;
+        $address->last_name = $request->last;
         $address->street = $request->street;
         $address->details = $request->details;
         $address->country = $request->country;

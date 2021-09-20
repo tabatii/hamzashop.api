@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eec4c1e8e846b3ffcb0097f935bcb883",
+    "content-hash": "e2393782a3a37e2a8d183a1aaa3eb9d2",
     "packages": [
         {
             "name": "amrshawky/currency",

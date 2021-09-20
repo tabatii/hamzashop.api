@@ -38,15 +38,17 @@ Route::get('/notifications', 'NotificationController@index');
 Route::post('/paypal/create', 'PayPalController@create');
 Route::post('/paypal/capture', 'PayPalController@capture');
 
-Route::apiResource('/products', 'ProductController')->parameters(['products' => 'id']);
+Route::post('/2checkout', 'TwoCheckoutController@checkout');
+
 Route::patch('/products/quick/{id}', 'ProductController@quick');
 Route::patch('/products/show/{id}', 'ProductController@display');
 Route::patch('/products/hide/{id}', 'ProductController@hide');
+Route::apiResource('/products', 'ProductController')->parameters(['products' => 'id']);
 
-Route::apiResource('/orders', 'OrderController')->parameters(['orders' => 'id']);
 Route::patch('/orders/refuse/{id}', 'OrderController@refuse');
 Route::patch('/orders/finish/{id}', 'OrderController@finish');
 Route::patch('/orders/cancel/{id}', 'OrderController@cancel');
+Route::apiResource('/orders', 'OrderController')->parameters(['orders' => 'id']);
 
 Route::apiResource('/users', 'UserController')->parameters(['users' => 'id']);
 Route::apiResource('/addresses', 'AddressController')->parameters(['addresses' => 'id']);

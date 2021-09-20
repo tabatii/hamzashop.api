@@ -17,6 +17,7 @@ class ShippingResource extends JsonResource
         return [
             'id' => $this->id,
             'country' => $this->country,
+            'code' => $this->code,
             'price' => $this->price,
             'min' => $this->min_time,
             'max' => $this->max_time,

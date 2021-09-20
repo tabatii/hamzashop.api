@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use AmrShawky\LaravelCurrency\Facade\Currency;
@@ -33,7 +33,7 @@ class PayPalController extends Controller
 	{
 		$clientId = env('PAYPAL_ID') ?: 'PAYPAL-SANDBOX-CLIENT-ID';
 		$clientSecret = env('PAYPAL_SECRET') ?: 'PAYPAL-SANDBOX-CLIENT-SECRET';
-		return new ProductionEnvironment($clientId, $clientSecret);
+		return new SandboxEnvironment($clientId, $clientSecret);
 	}
 
 	/**
@@ -46,12 +46,12 @@ class PayPalController extends Controller
 		return new PayPalHttpClient($this->environment());
 	}
 
-	public function body($id, $qty, $adr)
+	public function body($data)
 	{
-		$product = Product::findOrFail($id);
-		$address = Address::findOrFail($adr);
-		$shipping = Shipping::where('country', $address->country)->first();
-		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $qty) + $shipping->price)->get();
+		$product = Product::findOrFail($data['product']);
+		$address = Address::findOrFail($data['address']);
+		$shipping = Shipping::where('code', $address->country)->firstOrFail();
+		$price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $data['quantity']) + $shipping->price)->get();
 		return [
 			'intent' => 'CAPTURE',
 			'application_context' => [
@@ -74,7 +74,7 @@ class PayPalController extends Controller
 	{
 		$payment = new OrdersCreateRequest();
 		$payment->prefer('return=representation');
-		$payment->body = $this->body($request->product, $request->quantity, $request->address);
+		$payment->body = $this->body($request->validated());
 		$response = $this->client()->execute($payment);
 		return response()->json($response);
 	}
@@ -84,7 +84,7 @@ class PayPalController extends Controller
 		return DB::transaction(function () use ($request) {
 
 			$address = Address::findOrFail($request->address);
-			$shipping = Shipping::where('country', $address->country)->first();
+			$shipping = Shipping::where('code', $address->country)->firstOrFail();
 			$data = $this->client()->execute(new OrdersCaptureRequest($request->order));
 
 			$product = Product::findOrFail($request->product);
@@ -108,7 +108,7 @@ class PayPalController extends Controller
 			$notification = new Notification;
 			$notification->icon = 'mdi-cart-plus';
 			$notification->content = (new NotificationService)->newOrder();
-            $notification->save();
+			$notification->save();
 
 			return response()->json();
 		});
