@@ -51,7 +51,7 @@ class TwoCheckoutController extends Controller
         return [
             'Items' => [
                 [
-                    'Name' => $product->long_title,
+                    'Name' => $product->short_title,
                     'PurchaseType' => 'PRODUCT',
                     'IsDynamic' => true,
                     'Tangible' => true,
@@ -74,7 +74,7 @@ class TwoCheckoutController extends Controller
             ],
             'PaymentDetails' => [
                 'Currency' => 'USD',
-                'Type' => 'TEST',
+                'Type' => 'CC',
                 'PaymentMethod' => [
                     'Vendor3DSReturnURL' => 'www.return.com',
                     'Vendor3DSCancelURL' => 'www.cancel.com',
