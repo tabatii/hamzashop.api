@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2393782a3a37e2a8d183a1aaa3eb9d2",
+    "content-hash": "d9005169d321723a425586304bd47ff0",
     "packages": [
         {
             "name": "amrshawky/currency",
@@ -2177,6 +2177,63 @@
                 "source": "https://github.com/opis/closure/tree/3.6.2"
             },
             "time": "2021-04-09T13:42:10+00:00"
+        },
+        {
+            "name": "paymentwall/paymentwall-php",
+            "version": "2.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paymentwall/paymentwall-php.git",
+                "reference": "040cbd3aecafe25af35568590f78b6cef4b72015"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paymentwall/paymentwall-php/zipball/040cbd3aecafe25af35568590f78b6cef4b72015",
+                "reference": "040cbd3aecafe25af35568590f78b6cef4b72015",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "behat/behat": "2.4.*@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/Paymentwall/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paymentwall Team",
+                    "email": "devsupport@paymentwall.com"
+                }
+            ],
+            "description": "Paymentwall PHP Library. Paymentwall is the leading digital payments platform for globally monetizing digital goods and services.",
+            "homepage": "https://www.paymentwall.com/?source=gh",
+            "keywords": [
+                "alternative payments",
+                "api",
+                "carrier billing",
+                "credit cards",
+                "monetization",
+                "payment processing",
+                "payments",
+                "paymentwall",
+                "recurring billing"
+            ],
+            "support": {
+                "issues": "https://github.com/paymentwall/paymentwall-php/issues",
+                "source": "https://github.com/paymentwall/paymentwall-php/tree/v2.2.3"
+            },
+            "time": "2019-04-24T04:28:11+00:00"
         },
         {
             "name": "paypal/paypal-checkout-sdk",

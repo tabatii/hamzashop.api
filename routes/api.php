@@ -38,7 +38,7 @@ Route::get('/notifications', 'NotificationController@index');
 Route::post('/paypal/create', 'PayPalController@create');
 Route::post('/paypal/capture', 'PayPalController@capture');
 
-Route::post('/2checkout', 'TwoCheckoutController@checkout');
+Route::post('/paymentwall', 'PaymentwallController@payment');
 
 Route::patch('/products/quick/{id}', 'ProductController@quick');
 Route::patch('/products/show/{id}', 'ProductController@display');

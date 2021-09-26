@@ -11,6 +11,7 @@
         "guzzlehttp/guzzle": "^7.3",
         "laravel/framework": "^8.54",
         "laravel/tinker": "^2.5",
+        "paymentwall/paymentwall-php": "^2.2",
         "paypal/paypal-checkout-sdk": "^1.0",
         "tymon/jwt-auth": "^1.0"
     },

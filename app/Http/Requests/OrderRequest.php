@@ -24,8 +24,8 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'product' => 'required|integer|exists:products,id',
-            'address' => 'required|integer|exists:addresses,id',
+            'product' => 'required|integer|digits:15|exists:products,id',
+            'address' => 'required|integer|digits:15|exists:addresses,id',
             'quantity' => 'required|integer',
         ];
     }

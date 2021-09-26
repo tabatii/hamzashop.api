@@ -41,13 +41,12 @@ class TwoCheckoutController extends Controller
         ];
     }
 
-    public function body($data)
+    public function body($data, $token)
     {
         $product = Product::findOrFail($data['product']);
         $address = Address::findOrFail($data['address']);
         $shipping = Shipping::where('code', $address->country)->firstOrFail();
         $price = Currency::convert()->from('MAD')->to('USD')->amount(($product->price * $data['quantity']) + $shipping->price)->get();
-        $date = str_split($data['date'], 2);
         return [
             'Items' => [
                 [
@@ -73,17 +72,12 @@ class TwoCheckoutController extends Controller
                 'Zip' => $address->zip,
             ],
             'PaymentDetails' => [
+                'Type' => 'EES_TOKEN_PAYMENT',
                 'Currency' => 'USD',
-                'Type' => 'CC',
                 'PaymentMethod' => [
                     'Vendor3DSReturnURL' => 'www.return.com',
                     'Vendor3DSCancelURL' => 'www.cancel.com',
-                    'CardType' => $data['type'],
-                    'HolderName' => $data['name'],
-                    'CardNumber' => $data['card'],
-                    'ExpirationYear' => '20'.$date[1],
-                    'ExpirationMonth' => $date[0],
-                    'CCID' => $data['cvv'],
+                    'EesToken' => json_decode($token, true)['Results']['Token'],
                 ]
             ]
         ];
@@ -92,44 +86,57 @@ class TwoCheckoutController extends Controller
     public function checkout(CreditCardRequest $request)
     {
         $http = new Http($this->config());
+        $date = str_split($request->date, 2);
         try {
-            $response = $http->post('orders', [
-                'json' => $this->body($request->validated())
+            $tokenResponse = $http->post('tokens', [
+                'json' => [
+                    'Name' => $request->name,
+                    'CreditCard' => $request->card,
+                    'ExpirationDate' => $date[0].'/'.$date[1],
+                    'Cvv' => $request->cvv,
+                ]
+            ])->getBody()->getContents();
+            $paymentResponse = $http->post('orders', [
+                'json' => $this->body($request->validated(), $tokenResponse)
             ]);
-            return DB::transaction(function () use ($request, $response) {
-
-                $address = Address::findOrFail($request->address);
-                $shipping = Shipping::where('code', $address->country)->firstOrFail();
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                $product = Product::findOrFail($request->product);
-                $product->stock -= 1;
-                $product->save();
-
-                $order = new Order;
-                $order->user_id = auth()->id();
-                $order->product_id = $product->id;
-                $order->address_id = $address->id;
-                $order->quantity = $request->quantity;
-                $order->unit_price = $product->price;
-                $order->shipping_price = $shipping->price;
-                $order->total_amount =($product->price * $request->quantity) + $shipping->price;
-                $order->paid_amount = $data['GrossPrice'];
-                $order->paid_currency = $data['PayoutCurrency'];
-                $order->payment_method = $data['PaymentDetails']['PaymentMethod']['CardType'];
-                $order->status = Order::PENDING;
-                $order->save();
-
-                $notification = new Notification;
-                $notification->icon = 'mdi-cart-plus';
-                $notification->content = (new NotificationService)->newOrder();
-                $notification->save();
-
-                return response()->json();
-            });
         } catch (ClientException $e) {
             $error = json_decode($e->getResponse()->getBody()->getContents());
             return response()->json($error, 400);
         }
+    }
+
+    public function order($data)
+    {
+        return DB::transaction(function () use ($request, $response) {
+
+            $address = Address::findOrFail($request->address);
+            $shipping = Shipping::where('code', $address->country)->firstOrFail();
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            $product = Product::findOrFail($request->product);
+            $product->stock -= 1;
+            $product->save();
+
+            $order = new Order;
+            $order->user_id = auth()->id();
+            $order->product_id = $product->id;
+            $order->address_id = $address->id;
+            $order->quantity = $request->quantity;
+            $order->unit_price = $product->price;
+            $order->shipping_price = $shipping->price;
+            $order->total_amount =($product->price * $request->quantity) + $shipping->price;
+            $order->paid_amount = $data['GrossPrice'];
+            $order->paid_currency = $data['PayoutCurrency'];
+            $order->payment_method = $data['PaymentDetails']['PaymentMethod']['CardType'];
+            $order->status = Order::PENDING;
+            $order->save();
+
+            $notification = new Notification;
+            $notification->icon = 'mdi-cart-plus';
+            $notification->content = (new NotificationService)->newOrder();
+            $notification->save();
+
+            return response()->json();
+        });
     }
 }
